@@ -1,0 +1,140 @@
+<html>
+
+<head>
+    <!------ Scripts node ---------->
+    <script src="../node_modules/web3/dist/web3.min.js"></script>
+    <script src="https://unpkg.com/ipfs/dist/index.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ipfs/dist/index.min.js"></script>
+
+<!-- loading the human-readable (not minified) version -->
+<script src="https://unpkg.com/ipfs/dist/index.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ipfs/dist/index.js"></script>
+
+
+
+
+    <!--BootStrap-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+        crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+
+    <!--Icones-->
+    <link href="https://fonts.googleapis.com/css?family=Oleo+Script:400,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Teko:400,700" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <!--Css-->
+    <link rel="stylesheet" href="css/index.css">
+
+</head>
+
+<body>
+    <div class="container register">
+        <div class="row">
+            <div class="col-md-3 register-left">
+                <img src="img/icon.png" alt="" />
+                <h3>Welcome</h3>
+                <p>Guarde a sua mensagem para sempre!
+                    <br><br>
+                    Essa mensagem será salva na rede descentralizada do Ethereum
+                </p>
+            </div>
+
+            <div class="col-md-9 register-right">
+                <h3 class="register-heading">Envio de mensagem</h3>
+                <div class="row register-form" id="centro">
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="id" placeholder=" Id" value="" />
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="nome" placeholder=" Nome" value="" />
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="conta" placeholder="Conta" readonly value="" />
+                        </div>
+                        <div class="form-group">
+                            <textarea type="text" class="form-control" id="mensagem" rows="5" cols="50" placeholder="Mensagem"
+                                value=""></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="hahs">Hash da transação:</label>
+                            <input type="text" class="form-control" id="hash" readonly />
+                            <button id="btn_enviar"><i class="fa fa-paper-plane" aria-hidden="true"></i> Enviar
+                                mensagem</button>
+                            <button id="btn_limpar">Limpar </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+    </div>
+    <script>
+        if (typeof web3 !== 'undefined') {
+            web3 = new Web3(web3.currentProvider);
+        } else {
+            web3 = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io/v3/14a9ebf1a2a84cd6b2e5b3b9f7f5edb1"));
+
+        }
+        if (web3.isConnected()) {
+            console.log("Conectado");
+        } else {
+            console.log("Não conectado")
+        }
+
+        var account = web3.eth.accounts;
+        var accountInterval = setInterval(function () {
+            if (web3.eth.accounts[0] !== account) {
+                account = web3.eth.accounts;
+            }
+        });
+
+        var address = $('#conta').val(web3.eth.accounts);
+
+        var inclusaoContract = web3.eth.contract([{ "constant": false, "inputs": [{ "name": "id", "type": "uint256" }, { "name": "_mensagem", "type": "string" }, { "name": "_nome", "type": "string" }, { "name": "_dono", "type": "string" }], "name": "add", "outputs": [], "payable": true, "stateMutability": "payable", "type": "function" }, { "constant": true, "inputs": [{ "name": "id", "type": "uint256" }], "name": "get", "outputs": [{ "name": "", "type": "string" }, { "name": "", "type": "string" }, { "name": "", "type": "string" }], "payable": false, "stateMutability": "view", "type": "function" }]);
+
+        var inclusao = inclusaoContract.at('0xa17a77f7237a51d396d6c47ae00a9b6491cde94e');
+
+        web3.eth.defaultAccount = web3.eth.accounts[0];
+
+        $("#btn_enviar").click(function () {
+            inclusao.add($("#id").val(), $("#nome").val(), $("#conta").val(), $("#mensagem").val(),
+                {
+                    from: account.toString(),
+                    gas: 3000000,
+                    to: "0xa17a77f7237a51d396d6c47ae00a9b6491cde94e"
+                }, function (err, transactionHash) {
+                    if (err)
+                        console.log("erro");
+                    else
+                        $("#hash").val(transactionHash);
+                      
+
+                });
+
+        });
+   
+
+
+        $("#btn_limpar").click(function () {
+            $("#id").val('');
+            $("#nome").val('');
+            $("#mensagem").val('');
+            $("#hash").val('');
+
+        });
+
+    </script>
+
+
+</body>
+
+</html>

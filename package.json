@@ -1,0 +1,27 @@
+{
+  "name": "dapp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "deploy": "ipscend publish",
+    "ipfs": "ipscend --",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "http-server -a localhost -p 8000"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ethereumjs-wallet": "^0.6.3",
+    "express": "^4.16.4",
+    "fs": "0.0.1-security",
+    "fs-extra": "^7.0.1",
+    "ipfs-api": "^26.1.2",
+    "ipscend": "^0.4.3",
+    "truffle-contract": "^4.0.0",
+    "truffle-wallet-provider": "0.0.5",
+    "web3": "^0.20.6",
+    "web3-eth-accounts": "^1.0.0-beta.37",
+    "web3-net": "^1.0.0-beta.37"
+  }
+}
